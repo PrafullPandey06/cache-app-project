@@ -72,9 +72,12 @@ No delete:
 
 #include "Cache.h"
 #include <iostream>
+#include "FIFOEvictionPolicy.h"
 
 int main() {
-    Cache cache(3);
+    FIFOEvictionPolicy fifo;
+    Cache cache(3, &fifo);
+
     cache.put("A", 1);
     cache.put("B", 2);
     cache.put("C", 3);

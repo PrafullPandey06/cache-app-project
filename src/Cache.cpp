@@ -1,10 +1,16 @@
 #include "Cache.h"
 #include <iostream>
 
+/**
+Initializer List = How an object/member is CREATED
+
+this-> = How an already-created object is ACCESSED
+*/
+
 // Constructor Cache belongs to the Cache class.
 // capacity(capacity) -> initialize the capacity member variable with the value of the capacity parameter
 // this is same as writitng: this->capacity = capacity;
-Cache::Cache(size_t capacity) : capacity(capacity) {
+Cache::Cache(size_t capacity, EvictionPolicy* policy) : capacity(capacity), policy(policy) {
     std::cout<< "Cache Created with this capacity: " << capacity << std::endl;
 }
 
@@ -22,12 +28,12 @@ void Cache::put(const std::string& key, int value) {
     }
     // If the cache is full, remove the oldest entry
     else if(data.size() >= capacity) {
-        // Remove the oldest entry from list and map
-        std::string oldestKey = insertionOrder.front();
+        // Remove the oldest entry from the list and map
+        // policy is a pointer to the eviction policy object.
+        // ptr -> function() means (*ptr).function()
+        std::string oldestKey = policy->evict(insertionOrder);
         data.erase(oldestKey);
         std::cout << "Evicting key: " << oldestKey << std::endl;
-        // Remove the oldest key from the list
-        insertionOrder.pop_front();
 
         data[key] = value;
         insertionOrder.push_back(key);
@@ -55,7 +61,7 @@ void Cache::remove(const std::string& key) {
 
 // Print the cache in the order of insertion
 void Cache::printCache() {
-    for(const auto&key: insertionOrder) {
-        std::cout << key.first << " : " << key.second << std::endl;
+    for(const auto& key: insertionOrder) {
+        std::cout << key << " : " << data.at(key) << std::endl;
     }
 }

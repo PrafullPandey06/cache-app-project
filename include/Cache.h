@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <string>
 #include <list> // list is a doubly linked list
+#include "EvictionPolicy.h"
 
 class Cache {
     private:
@@ -15,8 +16,11 @@ class Cache {
 
         std::list<std::string> insertionOrder;
 
+        // This is a pointer to the eviction policy object.
+        EvictionPolicy* policy;
+
     public:
-        Cache(size_t capacity);
+        Cache(size_t capacity, EvictionPolicy* policy);
         ~Cache();
 
     // std:: string -> I need a string. Use the string class that lives inside the std namespace.
