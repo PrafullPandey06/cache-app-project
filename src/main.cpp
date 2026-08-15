@@ -74,16 +74,20 @@ No delete:
 #include <iostream>
 
 int main() {
-    Cache cache;
-    cache.put("age", 26);
+    Cache cache(3);
+    cache.put("A", 1);
+    cache.put("B", 2);
+    cache.put("C", 3);
+    std::cout << "Cache after inserting A, B, C:" << std::endl;
+    cache.printCache();
+    std::cout << "--------------------------------" << std::endl;
+    cache.put("D", 4);
+    std::cout << "Cache after inserting D:" << std::endl;
+    cache.put("E", 5);
 
-    std::cout << cache.get("age") << std::endl;
+    std::cout << cache.exists("A") << std::endl;
+    std::cout << cache.exists("B") << std::endl;
 
-    std::cout << cache.exists("age") << std::endl;
-
-    cache.remove("age");
-
-    std::cout << cache.exists("age") << std::endl;
-
+    cache.printCache();
     return 0;
 }

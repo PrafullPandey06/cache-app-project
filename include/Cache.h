@@ -2,13 +2,21 @@
 
 #include <unordered_map>
 #include <string>
+#include <list> // list is a doubly linked list
 
 class Cache {
     private:
         std::unordered_map<std::string, int> data;
 
+        // size_t -> unsigned integer type that is at least 16 bits in size. but main reason to use size_t is
+        // that container like map, set, etc. use size_t to store the size of the container and they return it also.
+        // why not int? because int is signed integer type that is at least 16 bits in size.
+        size_t capacity;
+
+        std::list<std::string> insertionOrder;
+
     public:
-        Cache();
+        Cache(size_t capacity);
         ~Cache();
 
     // std:: string -> I need a string. Use the string class that lives inside the std namespace.
@@ -18,5 +26,5 @@ class Cache {
         int get(const std:: string& key);
         bool exists(const std:: string& key);
         void remove(const std:: string& key);
-
+        void printCache();
 };
