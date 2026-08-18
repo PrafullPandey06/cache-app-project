@@ -25,22 +25,23 @@ void Cache::put(const std::string& key, int value) {
     // If the key is already present, update the value and move it to the end of the list
     if(data.find(key) != data.end()) {
         data.at(key) = value;
+        policy->onGet(key);
     }
     // If the cache is full, remove the oldest entry
     else if(data.size() >= capacity) {
         // Remove the oldest entry from the list and map
         // policy is a pointer to the eviction policy object.
         // ptr -> function() means (*ptr).function()
-        std::string oldestKey = policy->evict(insertionOrder);
-        data.erase(oldestKey);
-        std::cout << "Evicting key: " << oldestKey << std::endl;
+        std::string keyToEvict = policy->evict();
+        data.erase(keyToEvict);
+        std::cout << "Evicting key: " << keyToEvict << std::endl;
 
         data[key] = value;
-        insertionOrder.push_back(key);
+        policy->onPut(key);
     } 
     else {
         data[key] = value;
-        insertionOrder.push_back(key);
+        policy->onPut(key);
     }
 }
 
@@ -52,16 +53,18 @@ bool Cache::exists(const std::string& key) {
 // [] -> if the key is not found, it will create a new entry with the key and the value is 0
 // at -> if the key is not found, it will throw an exception
 int Cache::get(const std::string& key){
+    policy->onGet(key);
     return data.at(key);
 }
 
 void Cache::remove(const std::string& key) {
     data.erase(key);
+    policy->onRemove(key);
 }
 
 // Print the cache in the order of insertion
 void Cache::printCache() {
-    for(const auto& key: insertionOrder) {
-        std::cout << key << " : " << data.at(key) << std::endl;
+    for(const auto& entry: data) {
+        std::cout << entry.first << " : " << entry.second << std::endl;
     }
 }

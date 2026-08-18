@@ -14,8 +14,6 @@ class Cache {
         // why not int? because int is signed integer type that is at least 16 bits in size.
         size_t capacity;
 
-        std::list<std::string> insertionOrder;
-
         // This is a pointer to the eviction policy object.
         EvictionPolicy* policy;
 
