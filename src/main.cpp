@@ -73,10 +73,12 @@ No delete:
 #include "Cache.h"
 #include <iostream>
 #include "FIFOEvictionPolicy.h"
+#include "LRUEvictionPolicy.h"
 
 int main() {
     FIFOEvictionPolicy fifo;
-    Cache cache(3, &fifo);
+    LRUEvictionPolicy lru;
+    Cache cache(3, &lru);
 
     cache.put("A", 1);
     cache.put("B", 2);
@@ -84,6 +86,7 @@ int main() {
     std::cout << "Cache after inserting A, B, C:" << std::endl;
     cache.printCache();
     std::cout << "--------------------------------" << std::endl;
+    cache.get("A");
     cache.put("D", 4);
     std::cout << "Cache after inserting D:" << std::endl;
     cache.put("E", 5);

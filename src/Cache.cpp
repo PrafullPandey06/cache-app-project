@@ -26,6 +26,7 @@ void Cache::put(const std::string& key, int value) {
     if(data.find(key) != data.end()) {
         data.at(key) = value;
         policy->onGet(key);
+        return;
     }
     // If the cache is full, remove the oldest entry
     else if(data.size() >= capacity) {
@@ -53,13 +54,15 @@ bool Cache::exists(const std::string& key) {
 // [] -> if the key is not found, it will create a new entry with the key and the value is 0
 // at -> if the key is not found, it will throw an exception
 int Cache::get(const std::string& key){
+    int value = data.at(key);
     policy->onGet(key);
-    return data.at(key);
+    return value;
 }
 
 void Cache::remove(const std::string& key) {
-    data.erase(key);
-    policy->onRemove(key);
+    if(data.erase(key) > 0) {
+        policy->onRemove(key);
+    }
 }
 
 // Print the cache in the order of insertion
