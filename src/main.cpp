@@ -76,24 +76,45 @@ No delete:
 #include "LRUEvictionPolicy.h"
 
 int main() {
-    FIFOEvictionPolicy fifo;
     LRUEvictionPolicy lru;
     Cache cache(3, &lru);
 
     cache.put("A", 1);
     cache.put("B", 2);
     cache.put("C", 3);
-    std::cout << "Cache after inserting A, B, C:" << std::endl;
-    cache.printCache();
-    std::cout << "--------------------------------" << std::endl;
-    cache.get("A");
+    
+    // Initial LRU order: A B C
+
+    std::cout
+        << "Getting A: "
+        << cache.get("A")
+        << '\n';
+
+    // New LRU order: B C A
+    // Therefore B should be evicted.
     cache.put("D", 4);
-    std::cout << "Cache after inserting D:" << std::endl;
-    cache.put("E", 5);
 
-    std::cout << cache.exists("A") << std::endl;
-    std::cout << cache.exists("B") << std::endl;
+    std::cout << std::boolalpha;
 
-    cache.printCache();
+    std::cout
+        << "A exists: "
+        << cache.exists("A")
+        << '\n';
+
+    std::cout
+        << "B exists: "
+        << cache.exists("B")
+        << '\n';
+
+    std::cout
+        << "C exists: "
+        << cache.exists("C")
+        << '\n';
+
+    std::cout
+        << "D exists: "
+        << cache.exists("D")
+        << '\n';
+
     return 0;
 }
