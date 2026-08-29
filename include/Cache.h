@@ -4,6 +4,8 @@
 #include <string>
 #include <list> // list is a doubly linked list
 #include "EvictionPolicy.h"
+#include "CacheObserver.h"
+#include <vector>
 
 class Cache {
     private:
@@ -17,6 +19,8 @@ class Cache {
         // This is a pointer to the eviction policy object.
         EvictionPolicy* policy;
 
+        std::vector<CacheObserver*> observers;
+
     public:
         Cache(size_t capacity, EvictionPolicy* policy);
         ~Cache();
@@ -28,5 +32,9 @@ class Cache {
         int get(const std:: string& key);
         bool exists(const std:: string& key);
         void remove(const std:: string& key);
+        void addObserver(CacheObserver* observer);
+        void notifyPut(const std::string& key);
+        void notifyGet(const std::string& key);
+        void notifyEvict(const std::string& key);
         void printCache();
 };

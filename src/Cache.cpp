@@ -26,6 +26,7 @@ void Cache::put(const std::string& key, int value) {
     if(data.find(key) != data.end()) {
         data.at(key) = value;
         policy->onGet(key);
+        notifyGet(key);
         return;
     }
     // If the cache is full, remove the oldest entry
@@ -35,14 +36,17 @@ void Cache::put(const std::string& key, int value) {
         // ptr -> function() means (*ptr).function()
         std::string keyToEvict = policy->evict();
         data.erase(keyToEvict);
+        notifyEvict(keyToEvict);
         std::cout << "Evicting key: " << keyToEvict << std::endl;
 
         data[key] = value;
         policy->onPut(key);
+        notifyPut(key);
     } 
     else {
         data[key] = value;
         policy->onPut(key);
+        notifyPut(key);
     }
 }
 
@@ -56,6 +60,7 @@ bool Cache::exists(const std::string& key) {
 int Cache::get(const std::string& key){
     int value = data.at(key);
     policy->onGet(key);
+    notifyGet(key);
     return value;
 }
 
@@ -69,5 +74,31 @@ void Cache::remove(const std::string& key) {
 void Cache::printCache() {
     for(const auto& entry: data) {
         std::cout << entry.first << " : " << entry.second << std::endl;
+    }
+}
+
+// Add an observer to the cache
+void Cache::addObserver(CacheObserver* observer) {
+    observers.push_back(observer);
+}
+
+// Notify all observers that a key has been put into the cache
+void Cache::notifyPut(const std::string& key) {
+    for(auto observer: observers) {
+        observer -> onPut(key);
+    }
+}
+
+// Notify all observers that a key has been gotten from the cache
+void Cache::notifyGet(const std::string& key) {
+    for(auto observer: observers) {
+        observer -> onGet(key);
+    }
+}
+
+// Notify all observers that a key has been evicted from the cache
+void Cache::notifyEvict(const std::string& key) {
+    for(auto observer: observers) {
+        observer -> onEvict(key);
     }
 }
