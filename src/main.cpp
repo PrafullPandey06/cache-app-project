@@ -76,6 +76,7 @@ No delete:
 #include "LRUEvictionPolicy.h"
 #include "PolicyFactory.h"
 #include "LoggingObserver.h"
+#include "MetricObserver.h"
 
 int main() {
     auto policy = PolicyFactory::createPolicy("LRU");
@@ -83,7 +84,9 @@ int main() {
     // current polcy is unique_ptr but cache expects a Exception policy pointer
     Cache cache(3, policy.get());
     LoggingObserver observer;
+    MetricObserver metricObserver;
     cache.addObserver(&observer);
+    cache.addObserver(&metricObserver);
 
     cache.put("A", 1);
     cache.put("B", 2);
@@ -122,5 +125,6 @@ int main() {
         << cache.exists("D")
         << '\n';
 
+    metricObserver.printMetrics();
     return 0;
 }
