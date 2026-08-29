@@ -74,10 +74,13 @@ No delete:
 #include <iostream>
 #include "FIFOEvictionPolicy.h"
 #include "LRUEvictionPolicy.h"
+#include "PolicyFactory.h"
 
 int main() {
-    LRUEvictionPolicy lru;
-    Cache cache(3, &lru);
+    auto policy = PolicyFactory::createPolicy("LRU");
+    // get() is used to get the raw pointer from the smart pointer
+    // current polcy is unique_ptr but cache expects a Exception policy pointer
+    Cache cache(3, policy.get());
 
     cache.put("A", 1);
     cache.put("B", 2);
