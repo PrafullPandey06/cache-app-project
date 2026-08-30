@@ -10,7 +10,9 @@ this-> = How an already-created object is ACCESSED
 // Constructor Cache belongs to the Cache class.
 // capacity(capacity) -> initialize the capacity member variable with the value of the capacity parameter
 // this is same as writitng: this->capacity = capacity;
-Cache::Cache(size_t capacity, EvictionPolicy* policy) : capacity(capacity), policy(policy) {
+// policy(policy) -> initialize the policy member variable with the value of the policy parameter
+// policy is a unique_ptr, so we need to pass it by value.
+Cache::Cache(size_t capacity, std::unique_ptr<EvictionPolicy> policy) : capacity(capacity), policy(std::move(policy)) {
     std::cout<< "Cache Created with this capacity: " << capacity << std::endl;
 }
 
